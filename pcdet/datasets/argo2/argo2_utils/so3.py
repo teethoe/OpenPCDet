@@ -16,8 +16,9 @@ def quat_to_mat(quat_wxyz: Tensor) -> Tensor:
     Returns:
         (...,3,3) 3D rotation matrices.
     """
+    print(list(*quat_wxyz.shape[:-1]))
     return C.quaternion_to_rotation_matrix(
-        quat_wxyz
+        quat_wxyz, order=C.QuaternionCoeffOrder.WXYZ
     )
 
 
@@ -32,7 +33,7 @@ def mat_to_quat(mat: Tensor) -> Tensor:
         (...,4) Scalar first quaternions.
     """
     return C.rotation_matrix_to_quaternion(
-        mat
+        mat, order=C.QuaternionCoeffOrder.WXYZ
     )
 
 
