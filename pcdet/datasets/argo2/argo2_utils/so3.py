@@ -90,9 +90,8 @@ def quat_to_mat(quat_wxyz: Tensor) -> Tensor:
     Returns:
         (...,3,3) 3D rotation matrices.
     """
-    print(list(*quat_wxyz.shape[:-1]))
     return quaternion_to_rotation_matrix(
-        quat_wxyz, order=C.QuaternionCoeffOrder.WXYZ
+        quat_wxyz
     )
 
 
