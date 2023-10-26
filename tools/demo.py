@@ -1,5 +1,7 @@
 import argparse
 import glob
+import os.path
+import sys
 from pathlib import Path
 
 try:
@@ -18,6 +20,12 @@ from pcdet.config import cfg, cfg_from_yaml_file
 from pcdet.datasets import DatasetTemplate
 from pcdet.models import build_network, load_data_to_gpu
 from pcdet.utils import common_utils
+
+
+ROOT = os.path.dirname(Path.cwd())
+if str(ROOT) not in sys.path:
+    sys.path.append(str(ROOT))  # add ROOT to PATH
+ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
 
 class DemoDataset(DatasetTemplate):
@@ -68,12 +76,32 @@ def parse_config():
                         help='specify the point cloud data file or directory')
     parser.add_argument('--ckpt', type=str, default=None, help='specify the pretrained model')
     parser.add_argument('--ext', type=str, default='.bin', help='specify the extension of your point cloud data file')
+    parser.add_argument('--show_vis', action='store_true', help='show visualisation of results')
 
     args = parser.parse_args()
 
     cfg_from_yaml_file(args.cfg_file, cfg)
 
     return args, cfg
+
+
+def increment_path(path, exist_ok=False, sep='', mkdir=False):
+    # Increment file or directory path, i.e. runs/exp --> runs/exp{sep}2, runs/exp{sep}3, ... etc.
+    path = Path(path)  # os-agnostic
+    if path.exists() and not exist_ok:
+        path, suffix = (path.with_suffix(''), path.suffix) if path.is_file() else (path, '')
+
+        # Method 1
+        for n in range(2, 9999):
+            p = f'{path}{sep}{n}{suffix}'  # increment path
+            if not os.path.exists(p):  #
+                break
+        path = Path(p)
+
+    if mkdir:
+        path.mkdir(parents=True, exist_ok=True)  # make directory
+
+    return path
 
 
 def main():
@@ -97,13 +125,19 @@ def main():
             load_data_to_gpu(data_dict)
             pred_dicts, _ = model.forward(data_dict)
 
-            V.draw_scenes(
-                points=data_dict['points'][:, 1:], ref_boxes=pred_dicts[0]['pred_boxes'],
-                ref_scores=pred_dicts[0]['pred_scores'], ref_labels=pred_dicts[0]['pred_labels']
-            )
+            if args.show_vis:
+                logger.info(f'Visualized sample index: \t{idx + 1}')
+                V.draw_scenes(
+                    points=data_dict['points'][:, 1:], ref_boxes=pred_dicts[0]['pred_boxes'],
+                    ref_scores=pred_dicts[0]['pred_scores'], ref_labels=pred_dicts[0]['pred_labels']
+                )
 
-            if not OPEN3D_FLAG:
-                mlab.show(stop=True)
+                if not OPEN3D_FLAG:
+                    mlab.show(stop=True)
+
+            else:
+                logger.info(f'Calculated sample index: \t{idx + 1}')
+
 
     logger.info('Demo done.')
 
