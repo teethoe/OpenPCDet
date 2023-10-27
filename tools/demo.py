@@ -2,6 +2,7 @@ import argparse
 import glob
 import os.path
 import sys
+import pickle
 from pathlib import Path
 
 try:
@@ -26,6 +27,7 @@ ROOT = os.path.dirname(Path.cwd())
 if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # add ROOT to PATH
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
+SAVE_ROOT = ROOT / 'runs/demo'
 
 
 class DemoDataset(DatasetTemplate):
@@ -137,8 +139,14 @@ def main():
 
             else:
                 logger.info(f'Calculated sample index: \t{idx + 1}')
+                save_dir = increment_path(Path(SAVE_ROOT) / 'exp', exist_ok=False)
+                save_path = str(save_dir / f'{idx+1}.pkl')
+                with open(save_path, 'wb') as f:
+                    pickle.dump(data_dict, f, pickle.HIGHEST_PROTOCOL)
+                    pickle.dump(pred_dicts, f, pickle.HIGHEST_PROTOCOL)
 
-
+    if not args.show_vis:
+        logger.info(f'Results saved to {save_dir}')
     logger.info('Demo done.')
 
 
