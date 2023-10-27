@@ -90,9 +90,7 @@ def quat_to_mat(quat_wxyz: Tensor) -> Tensor:
     Returns:
         (...,3,3) 3D rotation matrices.
     """
-    return quaternion_to_rotation_matrix(
-        quat_wxyz
-    )
+    return quaternion_to_rotation_matrix(quat_wxyz)
 
 
 # @torch.jit.script
@@ -105,9 +103,7 @@ def mat_to_quat(mat: Tensor) -> Tensor:
     Returns:
         (...,4) Scalar first quaternions.
     """
-    return C.rotation_matrix_to_quaternion(
-        mat, order=C.QuaternionCoeffOrder.WXYZ
-    )
+    return C.rotation_matrix_to_quaternion(mat)
 
 
 @torch.jit.script
