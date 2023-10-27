@@ -1,10 +1,3 @@
-import argparse
-import glob
-import os.path
-import sys
-import pickle
-from pathlib import Path
-
 try:
     import open3d
     from visual_utils import open3d_vis_utils as V
@@ -16,6 +9,12 @@ except:
 
 import numpy as np
 import torch
+import argparse
+import glob
+import os.path
+import sys
+import pickle
+from pathlib import Path
 
 from pcdet.config import cfg, cfg_from_yaml_file
 from pcdet.datasets import DatasetTemplate
