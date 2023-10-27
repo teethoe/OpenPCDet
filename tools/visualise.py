@@ -10,8 +10,6 @@ except:
 import argparse
 import pickle
 
-from pcdet.utils import common_utils
-
 
 def parse_opt():
     parser = argparse.ArgumentParser()
@@ -22,8 +20,6 @@ def parse_opt():
 
 def main():
     args = parse_opt()
-    logger = common_utils.create_logger()
-    logger.info('-----------------Visualisation of OpenPCDet Demo-------------------------')
     with open(args.data_path, 'rb') as f:
         data_dict = pickle.load(f)
         pred_dicts = pickle.load(f)
@@ -34,8 +30,6 @@ def main():
 
         if not OPEN3D_FLAG:
             mlab.show(stop=True)
-
-    logger.info('Visualisation done.')
 
 
 if __name__ == '__main__':
