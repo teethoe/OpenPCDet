@@ -32,7 +32,7 @@ def main():
     args = parse_opt()
     with open(args.data_path, 'rb') as f:
         data_dict = CpuUnpickler(f).load()
-        pred_dicts = pickle.load(f)
+        pred_dicts = CpuUnpickler(f).load()
         V.draw_scenes(
             points=data_dict['points'][:, 1:], ref_boxes=pred_dicts[0]['pred_boxes'],
             ref_scores=pred_dicts[0]['pred_scores'], ref_labels=pred_dicts[0]['pred_labels']
