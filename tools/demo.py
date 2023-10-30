@@ -55,7 +55,7 @@ class DemoDataset(DatasetTemplate):
     def __getitem__(self, index):
         if self.ext == '.bin':
             points = np.fromfile(self.sample_file_list[index], dtype=np.float32).reshape(-1, 4)
-            elif self.ext == '.npy':
+        elif self.ext == '.npy':
             points = np.load(self.sample_file_list[index])
         elif self.ext == '.pcd':
             points = np.asarray(open3d.io.read_point_cloud(str(self.sample_file_list[index])).points)
