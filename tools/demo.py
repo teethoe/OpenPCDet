@@ -119,6 +119,7 @@ def main():
     model.load_params_from_file(filename=args.ckpt, logger=logger, to_cpu=True)
     model.cuda()
     model.eval()
+    save_dir = increment_path(Path(SAVE_ROOT) / 'exp', exist_ok=False, mkdir=True)
     with torch.no_grad():
         for idx, data_dict in enumerate(demo_dataset):
             data_dict = demo_dataset.collate_batch([data_dict])
@@ -137,7 +138,6 @@ def main():
 
             else:
                 logger.info(f'Calculated sample index: \t{idx + 1}')
-                save_dir = increment_path(Path(SAVE_ROOT) / 'exp', exist_ok=False, mkdir=True)
                 save_path = str(save_dir / f'{idx+1}.pkl')
                 with open(save_path, 'wb') as f:
                     pickle.dump(data_dict, f, pickle.HIGHEST_PROTOCOL)
