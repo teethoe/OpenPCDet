@@ -55,8 +55,12 @@ class DemoDataset(DatasetTemplate):
     def __getitem__(self, index):
         if self.ext == '.bin':
             points = np.fromfile(self.sample_file_list[index], dtype=np.float32).reshape(-1, 4)
-        elif self.ext == '.npy':
+            elif self.ext == '.npy':
             points = np.load(self.sample_file_list[index])
+        elif self.ext == '.pcd':
+            points = np.asarray(open3d.io.read_point_cloud(str(self.sample_file_list[index])).points)
+            if points.shape[1] == 3:
+                points = np.hstack((points, np.ones((points.shape[0], 1), dtype=points.dtype)))
         else:
             raise NotImplementedError
 
@@ -92,10 +96,9 @@ def increment_path(path, exist_ok=False, sep='', mkdir=False):
     if path.exists() and not exist_ok:
         path, suffix = (path.with_suffix(''), path.suffix) if path.is_file() else (path, '')
 
-        # Method 1
         for n in range(2, 9999):
             p = f'{path}{sep}{n}{suffix}'  # increment path
-            if not os.path.exists(p):  #
+            if not os.path.exists(p):
                 break
         path = Path(p)
 
