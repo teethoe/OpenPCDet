@@ -77,8 +77,10 @@ def main():
         data_dict = CpuUnpickler(f).load()
         pred_dicts = CpuUnpickler(f).load()
         labels = np.unique(np.array(pred_dicts[0]['pred_labels']))
+        print(labels)
+        print(pred_dicts[0]["pred_labels"])
         for label in labels:
-            print(f'Found {list(pred_dicts[0]["pred_labels"]).count(label)} {cfg.CLASS_NAMES[label]}(s)')
+            print(f'Found {list(pred_dicts[0]["pred_labels"]).count(label)} {cfg.CLASS_NAMES[label-1]}(s)')
         V.draw_scenes(
             points=data_dict['points'][:, 1:], ref_boxes=pred_dicts[0]['pred_boxes'],
             ref_scores=pred_dicts[0]['pred_scores'], ref_labels=pred_dicts[0]['pred_labels']
